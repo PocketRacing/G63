@@ -5,35 +5,86 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>G63 NIGHT DRIVE</title>
+
 <style>
-*{box-sizing:border-box;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
 body{background:#05070d;color:white;font-family:Arial;overflow:hidden}
-#game{height:100dvh;width:100%;position:relative}
+#game{height:100dvh;width:100%;position:relative;overflow:hidden}
 canvas{display:block}
-.hud{position:absolute;top:15px;left:15px;right:15px;display:flex;justify-content:space-between;pointer-events:none}
-.panel{background:#080e1cdd;padding:12px 16px;border:1px solid #ffffff25;border-radius:10px}
+.hud{
+ position:absolute;top:15px;left:15px;right:15px;
+ display:flex;justify-content:space-between;
+ pointer-events:none;z-index:2
+}
+.panel{
+ background:#080e1cdd;padding:12px 16px;
+ border:1px solid #ffffff25;border-radius:10px;
+ backdrop-filter:blur(8px)
+}
 .small{font-size:10px;letter-spacing:2px;color:#91a7c5}
 .value{font-size:22px;font-weight:bold;margin-top:5px}
-.logo{position:absolute;top:85px;width:100%;text-align:center;letter-spacing:5px;font-weight:900;text-shadow:0 0 15px #00bfff;pointer-events:none}
-.controls{position:absolute;bottom:22px;left:0;right:0;display:flex;justify-content:space-between;padding:0 15px;gap:10px}
-.controls button{width:65px;height:60px;border-radius:12px;background:#07182cdd;border:1px solid #00cfff;color:white;font-size:23px;touch-action:none}
+.logo{
+ position:absolute;top:85px;width:100%;
+ text-align:center;letter-spacing:5px;
+ font-weight:900;text-shadow:0 0 15px #00bfff;
+ pointer-events:none
+}
+.controls{
+ position:absolute;bottom:22px;left:0;right:0;
+ display:flex;justify-content:space-between;
+ padding:0 15px;gap:8px;z-index:3
+}
+.controls button{
+ width:65px;height:60px;border-radius:12px;
+ background:#07182cdd;border:1px solid #00cfff;
+ color:white;font-size:23px;touch-action:none
+}
 .controls .action{font-size:12px;color:#00eaff}
-.overlay{position:absolute;inset:0;background:#030712ed;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;z-index:5;padding:25px}
+.overlay{
+ position:absolute;inset:0;background:#030712ed;
+ display:flex;flex-direction:column;
+ justify-content:center;align-items:center;
+ text-align:center;z-index:5;padding:25px
+}
 h1{font-size:34px;letter-spacing:3px;color:#00dfff;text-shadow:0 0 25px #008cff}
 p{color:#a5b4ca;margin-top:14px;font-size:13px}
-.start{margin-top:30px;padding:16px 42px;background:#062743;border:1px solid #00dfff;color:#00eaff;border-radius:8px;font-weight:bold}
-#status{position:absolute;bottom:100px;width:100%;text-align:center;color:#ffcf66;font-size:12px;padding:0 15px}
+.start{
+ margin-top:30px;padding:16px 42px;
+ background:#062743;border:1px solid #00dfff;
+ color:#00eaff;border-radius:8px;font-weight:bold
+}
+#status{
+ position:absolute;bottom:100px;width:100%;
+ text-align:center;color:#ffcf66;font-size:12px;
+ padding:0 15px;z-index:2
+}
+#progress{
+ position:absolute;bottom:83px;left:15%;width:70%;
+ height:4px;background:#253247;border-radius:10px;
+ overflow:hidden;z-index:2;display:none
+}
+#bar{height:100%;width:0;background:#00dfff}
 </style>
 </head>
+
 <body>
 <div id="game">
+
 <div class="hud">
- <div class="panel"><div class="small">VELOCITY</div><div class="value"><span id="speed">0</span> KM/H</div></div>
- <div class="panel"><div class="small">DISTANCE</div><div class="value"><span id="distance">0</span> M</div></div>
+ <div class="panel">
+  <div class="small">VELOCITY</div>
+  <div class="value"><span id="speed">0</span> KM/H</div>
+ </div>
+ <div class="panel">
+  <div class="small">DISTANCE</div>
+  <div class="value"><span id="distance">0</span> M</div>
+ </div>
 </div>
 
 <div class="logo">MERCEDES-AMG G63</div>
-<div id="status">Загрузка игры...</div>
+
+<div id="status">Ожидание запуска...</div>
+<div id="progress"><div id="bar"></div></div>
 
 <div class="controls">
  <button id="left">◀</button>
@@ -44,11 +95,12 @@ p{color:#a5b4ca;margin-top:14px;font-size:13px}
 
 <div class="overlay" id="menu">
  <h1>G63 NIGHT DRIVE</h1>
- <p>2020 MERCEDES-BENZ G-CLASS AMG</p>
+ <p>2020 MERCEDES-BENZ AMG G63</p>
  <p>Реальная 3D-модель автомобиля</p>
  <p>WASD / стрелки — управление</p>
  <button class="start" id="start">НАЧАТЬ ПОЕЗДКУ</button>
 </div>
+
 </div>
 
 <script type="importmap">
@@ -63,91 +115,100 @@ p{color:#a5b4ca;margin-top:14px;font-size:13px}
 <script type="module">
 import * as THREE from "three";
 import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
-import JSZip from "https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm";
 
-const status=document.getElementById("status");
+const $=id=>document.getElementById(id);
+const status=$("status");
 
 const scene=new THREE.Scene();
 scene.background=new THREE.Color(0x080d1a);
 scene.fog=new THREE.Fog(0x080d1a,45,190);
 
-const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,500);
+const camera=new THREE.PerspectiveCamera(
+ 65,innerWidth/innerHeight,.1,500
+);
 camera.position.set(0,4,10);
 
-const renderer=new THREE.WebGLRenderer({antialias:true});
+const renderer=new THREE.WebGLRenderer({
+ antialias:true,powerPreference:"high-performance"
+});
 renderer.setSize(innerWidth,innerHeight);
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.25;
-document.getElementById("game").prepend(renderer.domElement);
+renderer.toneMappingExposure=1.2;
+$("game").prepend(renderer.domElement);
 
+// LIGHTING
 scene.add(new THREE.HemisphereLight(0xc0d9ff,0x171923,2));
 
 const moon=new THREE.DirectionalLight(0xffffff,2.5);
 moon.position.set(-15,30,20);
 moon.castShadow=true;
+moon.shadow.mapSize.set(1024,1024);
 scene.add(moon);
 
+// MATERIALS
+const groundMat=new THREE.MeshStandardMaterial({
+ color:0x101722,roughness:1
+});
 const roadMat=new THREE.MeshStandardMaterial({
  color:0x242a33,roughness:.8
 });
 
-function makeBox(w,h,d,mat,x,y,z){
- const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
- mesh.position.set(x,y,z);
- mesh.castShadow=true;
- mesh.receiveShadow=true;
- scene.add(mesh);
- return mesh;
+function box(w,h,d,mat,x,y,z){
+ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
+ m.position.set(x,y,z);
+ m.castShadow=true;
+ m.receiveShadow=true;
+ scene.add(m);
+ return m;
 }
 
-// Ground
-makeBox(300,.3,400,
- new THREE.MeshStandardMaterial({color:0x101722}),
- 0,-.35,-150);
+// GROUND AND ROAD
+box(300,.3,400,groundMat,0,-.35,-150);
+box(15,.1,400,roadMat,0,-.12,-150);
 
-// Road
-makeBox(15,.1,400,roadMat,0,-.12,-150);
-
-// Road markings
-const lineMat=new THREE.MeshBasicMaterial({color:0xdce5ee});
 const roadLines=[];
+const lineMat=new THREE.MeshBasicMaterial({color:0xdce5ee});
+
 for(let z=15;z>-380;z-=12){
- const line=makeBox(.12,.025,5,lineMat,0,-.045,z);
- roadLines.push(line);
+ roadLines.push(box(.12,.025,5,lineMat,0,-.045,z));
 }
 
-// Road borders
 const edgeMat=new THREE.MeshStandardMaterial({
  color:0x00bfff,
  emissive:0x0077ff,
  emissiveIntensity:2
 });
-makeBox(.12,.2,400,edgeMat,-7.5,.02,-150);
-makeBox(.12,.2,400,edgeMat,7.5,.02,-150);
 
-// Buildings
+box(.12,.2,400,edgeMat,-7.5,.02,-150);
+box(.12,.2,400,edgeMat,7.5,.02,-150);
+
+// CITY
 const buildings=[];
-for(let i=0;i<65;i++){
+
+for(let i=0;i<55;i++){
  const side=i%2===0?-1:1;
  const z=-Math.random()*370+10;
  const h=10+Math.random()*28;
  const w=5+Math.random()*10;
 
- const material=new THREE.MeshStandardMaterial({
-  color:0x172238,
-  roughness:.9
+ const mat=new THREE.MeshStandardMaterial({
+  color:0x172238,roughness:.9
  });
 
- const b=makeBox(w,h,9,material,
- side*(13+Math.random()*14),h/2,z);
+ const b=box(
+  w,h,9,mat,
+  side*(13+Math.random()*14),h/2,z
+ );
 
  buildings.push(b);
 
- // Windows
- const windowMat=new THREE.MeshBasicMaterial({color:0xffc66a});
+ const windowMat=new THREE.MeshBasicMaterial({
+  color:Math.random()>.5?0xffc66a:0x70bfff
+ });
+
  for(let y=3;y<h-2;y+=3){
   for(let x=-w/2+1;x<w/2-1;x+=2){
    if(Math.random()>.5){
@@ -162,13 +223,14 @@ for(let i=0;i<65;i++){
  }
 }
 
-// Street lights
+// STREET LIGHTS
 for(let z=10;z>-370;z-=24){
  for(const side of [-1,1]){
   const x=side*8.5;
   const poleMat=new THREE.MeshStandardMaterial({color:0x414b59});
-  makeBox(.13,6,.13,poleMat,x,3,z);
-  makeBox(1.4,.12,.15,poleMat,x-side*.55,6,z);
+
+  box(.13,6,.13,poleMat,x,3,z);
+  box(1.4,.12,.15,poleMat,x-side*.55,6,z);
 
   const light=new THREE.PointLight(0xffd59b,25,17);
   light.position.set(x-side*.55,5.7,z);
@@ -176,15 +238,18 @@ for(let z=10;z>-370;z-=24){
  }
 }
 
-// Vehicle
+// VEHICLE
 const car=new THREE.Group();
 scene.add(car);
 
 let carReady=false;
 let modelObject=null;
+let modelLength=4.5;
 
+// DEMO MODEL IF REAL MODEL IS MISSING
 function fallback(){
  const group=new THREE.Group();
+
  const bodyMat=new THREE.MeshStandardMaterial({
   color:0x080b11,metalness:.8,roughness:.2
  });
@@ -213,39 +278,17 @@ function fallback(){
  return group;
 }
 
-// Automatic ZIP model loader
-async function loadG63(){
- try{
-  status.textContent="Открываю архив G63...";
+// LOAD REAL G63 DIRECTLY
+function loadG63(){
+ const loader=new GLTFLoader();
 
-  const response=await fetch(
-   "2020-mercedes-benz-g-class-amg-g63.zip"
-  );
+ status.textContent="Загрузка Mercedes G63...";
+ $("progress").style.display="block";
 
-  if(!response.ok){
-   throw new Error("ZIP-файл не найден");
-  }
+ loader.load(
+  "g63.glb",
 
-  const buffer=await response.arrayBuffer();
-  const zip=await JSZip.loadAsync(buffer);
-
-  const files=Object.keys(zip.files);
-  const modelFile=files.find(f=>
-   f.toLowerCase().endsWith(".glb") &&
-   !zip.files[f].dir
-  );
-
-  if(!modelFile){
-   throw new Error("В ZIP не найден файл GLB. Проверь содержимое архива.");
-  }
-
-  status.textContent="Загружаю Mercedes G63 3D...";
-
-  const modelData=await zip.files[modelFile].async("arraybuffer");
-
-  const loader=new GLTFLoader();
-
-  loader.parse(modelData,"",gltf=>{
+  gltf=>{
    modelObject=gltf.scene;
 
    modelObject.traverse(obj=>{
@@ -258,53 +301,63 @@ async function loadG63(){
     }
    });
 
-   // Automatic model sizing
-   let bounds=new THREE.Box3().setFromObject(modelObject);
+   const bounds=new THREE.Box3().setFromObject(modelObject);
    const size=bounds.getSize(new THREE.Vector3());
 
-   const targetLength=4.5;
-   const scale=targetLength/Math.max(size.x,size.y,size.z);
+   // Normalize model size
+   const maxDimension=Math.max(size.x,size.y,size.z);
+   const scale=modelLength/maxDimension;
 
    modelObject.scale.setScalar(scale);
 
-   bounds.setFromObject(modelObject);
-   const center=bounds.getCenter(new THREE.Vector3());
+   const newBounds=new THREE.Box3().setFromObject(modelObject);
+   const center=newBounds.getCenter(new THREE.Vector3());
+   const newSize=newBounds.getSize(new THREE.Vector3());
 
-   modelObject.position.sub(center);
-   modelObject.position.y+=bounds.getSize(new THREE.Vector3()).y/2;
+   modelObject.position.x-=center.x;
+   modelObject.position.z-=center.z;
+   modelObject.position.y-=newBounds.min.y;
 
    car.add(modelObject);
    carReady=true;
 
-   status.textContent="Mercedes G63 загружен!";
-   setTimeout(()=>status.style.display="none",3500);
+   $("progress").style.display="none";
+   status.textContent="Mercedes G63 готов!";
+   setTimeout(()=>status.style.display="none",2500);
+  },
 
-  },error=>{
-   throw new Error("Ошибка чтения 3D-модели");
-  });
+  progress=>{
+   if(progress.total){
+    const percent=Math.round(
+     progress.loaded/progress.total*100
+    );
+    $("bar").style.width=percent+"%";
+    status.textContent="Загрузка G63: "+percent+"%";
+   }else{
+    status.textContent="Загрузка модели G63...";
+   }
+  },
 
- }catch(error){
-  console.error(error);
-  status.textContent=error.message+
-  " — используется демонстрационная машина.";
-
-  car.add(fallback());
-  carReady=true;
- }
+  error=>{
+   console.error(error);
+   status.textContent="Не удалось загрузить g63.glb";
+   $("progress").style.display="none";
+  }
+ );
 }
 
-loadG63();
-
-// Headlights
+// HEADLIGHTS
 for(const x of [-.8,.8]){
- const light=new THREE.SpotLight(0xe6f3ff,120,65,.35,.5,1);
+ const light=new THREE.SpotLight(
+  0xe6f3ff,120,65,.35,.5,1
+ );
  light.position.set(x,1.4,1.5);
  light.target.position.set(x,.2,-35);
  car.add(light);
  car.add(light.target);
 }
 
-// Controls
+// CONTROLS
 const keys={};
 let speed=0;
 let distance=0;
@@ -313,13 +366,16 @@ let playing=false;
 
 window.addEventListener("keydown",e=>{
  keys[e.key.toLowerCase()]=true;
+ if(e.code==="Space")keys.w=true;
 });
+
 window.addEventListener("keyup",e=>{
  keys[e.key.toLowerCase()]=false;
+ if(e.code==="Space")keys.w=false;
 });
 
 function bind(id,key){
- const el=document.getElementById(id);
+ const el=$(id);
 
  el.addEventListener("pointerdown",e=>{
   e.preventDefault();
@@ -337,19 +393,26 @@ bind("right","d");
 bind("gas","w");
 bind("brake","s");
 
-document.getElementById("start").onclick=()=>{
+// START
+$("start").onclick=()=>{
+ if(!carReady){
+  status.textContent="Подожди загрузки автомобиля";
+  return;
+ }
  playing=true;
- document.getElementById("menu").style.display="none";
+ $("menu").style.display="none";
 };
 
 const clock=new THREE.Clock();
 
+// GAME LOOP
 function animate(){
  requestAnimationFrame(animate);
 
  const dt=Math.min(clock.getDelta(),.04);
 
  if(playing){
+
   if(keys.w)speed+=45*dt;
   else speed-=10*dt;
 
@@ -362,7 +425,9 @@ function animate(){
   if(!keys.a&&!keys.d)steering*=.9;
 
   car.position.x+=steering*speed*.009*dt;
-  car.position.x=THREE.MathUtils.clamp(car.position.x,-5.5,5.5);
+  car.position.x=THREE.MathUtils.clamp(
+   car.position.x,-5.5,5.5
+  );
 
   car.rotation.y=THREE.MathUtils.lerp(
    car.rotation.y,-steering*.12,.1
@@ -370,8 +435,8 @@ function animate(){
 
   distance+=speed*dt/3.6;
 
-  document.getElementById("speed").textContent=Math.round(speed);
-  document.getElementById("distance").textContent=Math.floor(distance);
+  $("speed").textContent=Math.round(speed);
+  $("distance").textContent=Math.floor(distance);
 
   const movement=speed*dt/3.6;
 
@@ -386,12 +451,12 @@ function animate(){
   });
  }
 
- // Follow camera
- const cameraTarget=new THREE.Vector3(
+ // CAMERA FOLLOW
+ const target=new THREE.Vector3(
   car.position.x*.4,4.3,10
  );
 
- camera.position.lerp(cameraTarget,.055);
+ camera.position.lerp(target,.055);
  camera.lookAt(car.position.x*.35,1.3,-10);
 
  renderer.render(scene,camera);
@@ -403,6 +468,7 @@ window.addEventListener("resize",()=>{
  renderer.setSize(innerWidth,innerHeight);
 });
 
+loadG63();
 animate();
 </script>
 </body>

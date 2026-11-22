@@ -3,12 +3,12 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#05070d">
 <title>G63 NIGHT DRIVE</title>
 
 <style>
-* {
+*{
  box-sizing:border-box;
  margin:0;
  padding:0;
@@ -17,8 +17,7 @@
  -webkit-touch-callout:none;
  -webkit-tap-highlight-color:transparent;
 }
-
-html,body {
+html,body{
  width:100%;
  height:100%;
  overflow:hidden;
@@ -26,213 +25,188 @@ html,body {
  color:white;
  font-family:Arial,sans-serif;
  touch-action:none;
- overscroll-behavior:none;
 }
-
-#game {
+#game{
  position:relative;
  width:100%;
  height:100dvh;
  overflow:hidden;
  touch-action:none;
 }
-
-canvas {
- display:block;
- width:100%;
- height:100%;
- touch-action:none;
-}
-
-.hud {
+canvas{display:block}
+.hud{
  position:absolute;
- top:14px;
+ top:12px;
  left:12px;
  right:12px;
  display:flex;
  justify-content:space-between;
- pointer-events:none;
  z-index:2;
+ pointer-events:none;
 }
-
-.panel {
+.panel{
  background:#080e1cdd;
- padding:10px 14px;
  border:1px solid #ffffff25;
  border-radius:10px;
+ padding:10px 13px;
 }
-
-.small {
+.small{
+ color:#91a7c5;
  font-size:9px;
  letter-spacing:2px;
- color:#91a7c5;
 }
-
-.value {
- font-size:21px;
+.value{
+ font-size:20px;
  font-weight:bold;
  margin-top:4px;
 }
-
-.logo {
+.logo{
  position:absolute;
  top:85px;
  width:100%;
  text-align:center;
- letter-spacing:4px;
  font-size:13px;
- font-weight:900;
+ font-weight:bold;
+ letter-spacing:4px;
  color:#dceeff;
  text-shadow:0 0 15px #00bfff;
  pointer-events:none;
 }
-
-.controls {
+.controls{
  position:absolute;
  bottom:20px;
  left:0;
  right:0;
+ padding:0 13px;
  display:flex;
  justify-content:space-between;
  align-items:flex-end;
- padding:0 15px;
  z-index:4;
  pointer-events:none;
 }
-
-.steering {
+.steering,.pedals{
  display:flex;
- gap:10px;
+ gap:9px;
 }
-
-.pedals {
- display:flex;
- flex-direction:column;
- gap:10px;
-}
-
-.control {
- display:flex;
- align-items:center;
- justify-content:center;
- width:68px;
- height:68px;
+.pedals{flex-direction:column}
+.control{
+ width:65px;
+ height:65px;
  border-radius:17px;
- background:#081a30e8;
+ background:#081a30ed;
  border:1px solid #00bfff;
  color:white;
  font-size:25px;
  font-weight:bold;
- box-shadow:0 0 15px #0077ff22;
  touch-action:none;
  pointer-events:auto;
 }
-
-.control.pedal {
- width:76px;
- height:60px;
- font-size:13px;
- letter-spacing:1px;
+.control.pedal{
+ width:72px;
+ height:57px;
+ font-size:12px;
 }
-
-.control.gas {
- background:#063b30e8;
- border-color:#00e5a0;
+.gas{
  color:#00ffc0;
+ border-color:#00e5a0;
+ background:#063b30ed;
 }
-
-.control.brake {
- background:#421515e8;
- border-color:#ff5252;
+.brake{
  color:#ff7777;
+ border-color:#ff5252;
+ background:#421515ed;
 }
-
-.control.active {
- transform:scale(.94);
+.control.active{
+ transform:scale(.93);
  background:#12618b;
- box-shadow:0 0 20px #00bfff88;
 }
-
-.control.gas.active {
- background:#087d5d;
-}
-
-.control.brake.active {
- background:#8b2424;
-}
-
-.overlay {
+.gas.active{background:#087d5d}
+.brake.active{background:#8b2424}
+.overlay{
  position:absolute;
  inset:0;
- background:#030712ed;
+ z-index:5;
  display:flex;
  flex-direction:column;
- justify-content:center;
  align-items:center;
+ justify-content:center;
  text-align:center;
- z-index:5;
- padding:25px;
+ padding:20px;
+ background:#030712ed;
 }
-
-h1 {
- font-size:32px;
+h1{
+ font-size:30px;
  letter-spacing:3px;
  color:#00dfff;
  text-shadow:0 0 25px #008cff;
 }
-
-p {
+p{
  color:#a5b4ca;
- margin-top:14px;
+ margin-top:12px;
  font-size:13px;
 }
-
-.start {
- margin-top:30px;
- padding:16px 42px;
+.start{
+ margin-top:24px;
+ padding:15px 35px;
  background:#062743;
  border:1px solid #00dfff;
- color:#00eaff;
  border-radius:8px;
+ color:#00eaff;
  font-weight:bold;
- font-size:14px;
 }
-
-#status {
+#status{
  position:absolute;
+ z-index:3;
  bottom:105px;
  width:100%;
  text-align:center;
- color:#ffcf66;
  font-size:12px;
- padding:0 15px;
- z-index:2;
+ color:#ffcf66;
  pointer-events:none;
 }
-
-#progress {
+#progress{
  position:absolute;
+ z-index:3;
  bottom:88px;
  left:15%;
  width:70%;
  height:4px;
  background:#253247;
- border-radius:10px;
- overflow:hidden;
- z-index:2;
  display:none;
 }
-
-#bar {
+#bar{
  height:100%;
  width:0;
  background:#00dfff;
 }
-
-@media(max-width:400px) {
- .control {width:60px;height:60px}
- .control.pedal {width:68px;height:55px}
- .controls {padding:0 10px}
+.colors{
+ display:flex;
+ justify-content:center;
+ flex-wrap:wrap;
+ gap:12px;
+ margin-top:22px;
+ max-width:300px;
+}
+.color-choice{
+ width:38px;
+ height:38px;
+ border-radius:50%;
+ border:3px solid #64748b;
+ box-shadow:0 0 8px #000;
+ touch-action:manipulation;
+}
+.color-choice.selected{
+ border-color:#00eaff;
+ box-shadow:0 0 14px #00bfff;
+}
+#colorName{
+ color:#00dfff;
+ font-size:12px;
+ margin-top:10px;
+}
+@media(max-width:380px){
+ .control{width:58px;height:58px}
+ .control.pedal{width:65px;height:53px}
 }
 </style>
 </head>
@@ -253,27 +227,36 @@ p {
 
 <div class="logo">MERCEDES-AMG G63</div>
 
-<div id="status">Подготовка...</div>
+<div id="status">Загрузка Mercedes G63...</div>
 <div id="progress"><div id="bar"></div></div>
 
 <div class="controls">
-
  <div class="steering">
   <button class="control" id="left">◀</button>
   <button class="control" id="right">▶</button>
  </div>
-
  <div class="pedals">
   <button class="control pedal brake" id="brake">ТОРМОЗ</button>
   <button class="control pedal gas" id="gas">ГАЗ ▲</button>
  </div>
-
 </div>
 
 <div class="overlay" id="menu">
  <h1>G63 NIGHT DRIVE</h1>
  <p>2020 MERCEDES-BENZ AMG G63</p>
- <p>Управление: кнопки на экране</p>
+ <p>Выбери цвет своего Гелика</p>
+
+ <div class="colors">
+  <button class="color-choice selected" data-color="#111111" data-name="Чёрный" style="background:#111"></button>
+  <button class="color-choice" data-color="#eeeeee" data-name="Белый" style="background:#eee"></button>
+  <button class="color-choice" data-color="#777777" data-name="Серый" style="background:#777"></button>
+  <button class="color-choice" data-color="#a31320" data-name="Красный" style="background:#a31320"></button>
+  <button class="color-choice" data-color="#123b79" data-name="Синий" style="background:#123b79"></button>
+ </div>
+
+ <div id="colorName">Чёрный G63</div>
+
+ <p>Управление кнопками на экране</p>
  <button class="start" id="start">НАЧАТЬ ПОЕЗДКУ</button>
 </div>
 
@@ -296,47 +279,50 @@ import JSZip from "https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm";
 const $=id=>document.getElementById(id);
 const status=$("status");
 
+// ЗАПРЕТ СИСТЕМНОГО МЕНЮ
+document.addEventListener("contextmenu",e=>e.preventDefault());
+document.addEventListener("selectstart",e=>e.preventDefault());
+document.addEventListener("dragstart",e=>e.preventDefault());
+
+// THREE.JS
 const scene=new THREE.Scene();
 scene.background=new THREE.Color(0x080d1a);
-scene.fog=new THREE.Fog(0x080d1a,45,190);
+scene.fog=new THREE.Fog(0x080d1a,45,160);
 
 const camera=new THREE.PerspectiveCamera(
- 65,innerWidth/innerHeight,.1,500
+ 65,innerWidth/innerHeight,.1,400
 );
 camera.position.set(0,4,10);
 
 const renderer=new THREE.WebGLRenderer({
- antialias:true,
+ antialias:false,
  powerPreference:"high-performance"
 });
 renderer.setSize(innerWidth,innerHeight);
-renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
-renderer.shadowMap.enabled=true;
-renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.setPixelRatio(Math.min(devicePixelRatio,1));
+renderer.shadowMap.enabled=false;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.2;
+renderer.toneMappingExposure=1.15;
 $("game").prepend(renderer.domElement);
 
+// ОСВЕЩЕНИЕ
 scene.add(new THREE.HemisphereLight(0xc0d9ff,0x171923,2));
 
-const moon=new THREE.DirectionalLight(0xffffff,2.5);
+const moon=new THREE.DirectionalLight(0xffffff,1.7);
 moon.position.set(-15,30,20);
-moon.castShadow=true;
-moon.shadow.mapSize.set(1024,1024);
 scene.add(moon);
 
+// СОЗДАНИЕ ОБЪЕКТОВ
 function box(w,h,d,mat,x,y,z){
  const m=new THREE.Mesh(
   new THREE.BoxGeometry(w,h,d),mat
  );
  m.position.set(x,y,z);
- m.castShadow=true;
- m.receiveShadow=true;
  scene.add(m);
  return m;
 }
 
-// ДОРОГА
+// ЗЕМЛЯ И ДОРОГА
 box(300,.3,400,
  new THREE.MeshStandardMaterial({color:0x101722}),
  0,-.35,-150
@@ -347,69 +333,58 @@ box(15,.1,400,
  0,-.12,-150
 );
 
+// РАЗМЕТКА
 const roadLines=[];
 const lineMat=new THREE.MeshBasicMaterial({color:0xdce5ee});
 
-for(let z=15;z>-380;z-=12){
+for(let z=15;z>-380;z-=15){
  roadLines.push(box(.12,.025,5,lineMat,0,-.045,z));
 }
 
-const edgeMat=new THREE.MeshStandardMaterial({
- color:0x00bfff,
- emissive:0x0077ff,
- emissiveIntensity:2
-});
+// КРАЯ ДОРОГИ
+const edgeMat=new THREE.MeshBasicMaterial({color:0x087eb0});
+box(.12,.15,400,edgeMat,-7.5,.02,-150);
+box(.12,.15,400,edgeMat,7.5,.02,-150);
 
-box(.12,.2,400,edgeMat,-7.5,.02,-150);
-box(.12,.2,400,edgeMat,7.5,.02,-150);
-
-// ГОРОД
+// ГОРОД — ОБЛЕГЧЁННЫЙ
 const buildings=[];
 
-for(let i=0;i<55;i++){
+for(let i=0;i<30;i++){
  const side=i%2===0?-1:1;
  const z=-Math.random()*370+10;
- const h=10+Math.random()*28;
- const w=5+Math.random()*10;
+ const h=12+Math.random()*22;
+ const w=6+Math.random()*8;
 
  const b=box(
   w,h,9,
-  new THREE.MeshStandardMaterial({color:0x172238}),
-  side*(13+Math.random()*14),
+  new THREE.MeshStandardMaterial({
+   color:0x172238,
+   roughness:1
+  }),
+  side*(14+Math.random()*12),
   h/2,z
  );
 
  buildings.push(b);
-
- for(let y=3;y<h-2;y+=3){
-  for(let x=-w/2+1;x<w/2-1;x+=2){
-   if(Math.random()>.5){
-    const win=new THREE.Mesh(
-     new THREE.PlaneGeometry(.8,1.1),
-     new THREE.MeshBasicMaterial({
-      color:Math.random()>.5?0xffc66a:0x70bfff
-     })
-    );
-    win.position.set(b.position.x+x,y,z+4.53);
-    scene.add(win);
-   }
-  }
- }
 }
 
-// ФОНАРИ
-for(let z=10;z>-370;z-=24){
- for(const side of [-1,1]){
-  const x=side*8.5;
-  const poleMat=new THREE.MeshStandardMaterial({color:0x414b59});
+// НЕБОЛЬШИЕ СВЕТЯЩИЕСЯ ОКНА
+for(let i=0;i<45;i++){
+ const side=i%2===0?-1:1;
+ const z=-Math.random()*350;
+ const x=side*(14+Math.random()*12);
+ const y=4+Math.random()*17;
 
-  box(.13,6,.13,poleMat,x,3,z);
-  box(1.4,.12,.15,poleMat,x-side*.55,6,z);
+ const windowMesh=new THREE.Mesh(
+  new THREE.PlaneGeometry(1,1.4),
+  new THREE.MeshBasicMaterial({
+   color:Math.random()>.5?0xffc66a:0x70bfff
+  })
+ );
 
-  const light=new THREE.PointLight(0xffd59b,20,17);
-  light.position.set(x-side*.55,5.7,z);
-  scene.add(light);
- }
+ windowMesh.position.set(x,y,z);
+ windowMesh.rotation.y=side===1?0:Math.PI;
+ scene.add(windowMesh);
 }
 
 // АВТОМОБИЛЬ
@@ -418,18 +393,19 @@ scene.add(car);
 
 let carReady=false;
 let modelObject=null;
+let paintMaterials=[];
+let originalColors=[];
 
-// ЗАГРУЗКА ZIP
+// ЗАГРУЗКА ТВОЕГО АРХИВА
 async function loadG63(){
  const filename="2020-mercedes-benz-g-class-amg-g63.zip";
- const loader=new GLTFLoader();
 
- status.textContent="Загрузка архива Mercedes G63...";
+ status.textContent="Загрузка архива G63...";
  $("progress").style.display="block";
 
  try{
   const response=await fetch(filename);
-  if(!response.ok)throw new Error("Не найден файл "+filename);
+  if(!response.ok)throw new Error("Архив не найден: "+filename);
 
   const total=Number(response.headers.get("content-length"))||0;
   const reader=response.body.getReader();
@@ -446,10 +422,9 @@ async function loadG63(){
    if(total){
     const percent=Math.round(loaded/total*100);
     $("bar").style.width=percent+"%";
-    status.textContent="Загрузка архива: "+percent+"%";
+    status.textContent="Загрузка модели: "+percent+"%";
    }else{
-    status.textContent="Загрузка: "+
-     (loaded/1024/1024).toFixed(1)+" МБ";
+    status.textContent="Загрузка: "+(loaded/1048576).toFixed(1)+" МБ";
    }
   }
 
@@ -461,7 +436,7 @@ async function loadG63(){
    offset+=chunk.length;
   }
 
-  status.textContent="Распаковка модели...";
+  status.textContent="Распаковка архива...";
   const zip=await JSZip.loadAsync(buffer);
 
   const files=Object.keys(zip.files);
@@ -470,14 +445,16 @@ async function loadG63(){
    files.find(f=>!zip.files[f].dir&&f.toLowerCase().endsWith(".glb"))
    ||files.find(f=>!zip.files[f].dir&&f.toLowerCase().endsWith(".gltf"));
 
-  if(!modelFile)throw new Error("В ZIP не найдена GLB/GLTF модель");
+  if(!modelFile)throw new Error("В архиве не найдена 3D-модель");
 
   if(modelFile.toLowerCase().endsWith(".gltf")){
-   throw new Error("Найдена GLTF-модель. Для её текстур нужна отдельная настройка.");
+   throw new Error("Найдена GLTF-модель. Для неё нужна загрузка внешних текстур.");
   }
 
-  status.textContent="Загрузка 3D-модели...";
+  status.textContent="Создание автомобиля...";
   const modelData=await zip.files[modelFile].async("arraybuffer");
+
+  const loader=new GLTFLoader();
 
   loader.parse(
    modelData,
@@ -488,21 +465,47 @@ async function loadG63(){
 
  }catch(error){
   console.error(error);
-  status.textContent="Ошибка: "+error.message;
+  status.textContent="Ошибка загрузки: "+error.message;
   $("progress").style.display="none";
  }
 }
 
-// ДОБАВЛЕНИЕ МОДЕЛИ
+// СОЗДАНИЕ ГЕЛИКА
 function addModel(gltf){
  modelObject=gltf.scene;
 
  modelObject.traverse(obj=>{
-  if(obj.isMesh){
-   obj.castShadow=true;
-   obj.receiveShadow=true;
-   if(obj.material)obj.material.side=THREE.DoubleSide;
-  }
+  if(!obj.isMesh)return;
+
+  obj.castShadow=false;
+  obj.receiveShadow=false;
+
+  const materials=Array.isArray(obj.material)
+   ?obj.material
+   :[obj.material];
+
+  materials.forEach(mat=>{
+   if(!mat)return;
+
+   const name=(mat.name||"").toLowerCase();
+
+   const excluded=[
+    "glass","window","tire","tyre","rubber",
+    "wheel","chrome","light","lamp","glass"
+   ];
+
+   const isExcluded=excluded.some(word=>name.includes(word));
+
+   if(!isExcluded&&mat.color){
+    const copy=mat.clone();
+    obj.material=Array.isArray(obj.material)
+     ?obj.material.map(m=>m===mat?copy:m)
+     :copy;
+
+    paintMaterials.push(copy);
+    originalColors.push(copy.color.clone());
+   }
+  });
  });
 
  const bounds=new THREE.Box3().setFromObject(modelObject);
@@ -519,7 +522,7 @@ function addModel(gltf){
  modelObject.position.z-=center.z;
  modelObject.position.y-=newBounds.min.y;
 
- // РАЗВОРОТ ГЕЛИКА ПЕРЕДОМ ВПЕРЁД
+ // ГЕЛИК ПЕРЕДОМ ВПЕРЁД
  modelObject.rotation.y=Math.PI;
 
  car.add(modelObject);
@@ -529,9 +532,7 @@ function addModel(gltf){
  $("bar").style.width="0%";
  status.textContent="Mercedes G63 готов!";
 
- setTimeout(()=>{
-  status.style.display="none";
- },3000);
+ setTimeout(()=>status.style.display="none",2500);
 }
 
 function modelError(error){
@@ -540,18 +541,30 @@ function modelError(error){
  $("progress").style.display="none";
 }
 
-// ФАРЫ
-for(const x of [-.8,.8]){
- const light=new THREE.SpotLight(
-  0xe6f3ff,120,65,.35,.5,1
- );
+// ВЫБОР ЦВЕТА
+function changeColor(hex,name){
+ const color=new THREE.Color(hex);
 
- light.position.set(x,1.4,1.5);
- light.target.position.set(x,.2,-35);
+ paintMaterials.forEach((mat,index)=>{
+  const original=originalColors[index];
+  mat.color.copy(original).multiply(color);
+ });
 
- car.add(light);
- car.add(light.target);
+ $("colorName").textContent=name+" G63";
+
+ document.querySelectorAll(".color-choice").forEach(btn=>{
+  btn.classList.toggle(
+   "selected",
+   btn.dataset.color===hex
+  );
+ });
 }
+
+document.querySelectorAll(".color-choice").forEach(btn=>{
+ btn.addEventListener("click",()=>{
+  changeColor(btn.dataset.color,btn.dataset.name);
+ });
+});
 
 // УПРАВЛЕНИЕ
 const keys={};
@@ -562,15 +575,15 @@ let playing=false;
 
 window.addEventListener("keydown",e=>{
  keys[e.key.toLowerCase()]=true;
- if(e.code==="Space")keys.w=true;
+ if(e.code==="Space")keys.s=true;
 });
 
 window.addEventListener("keyup",e=>{
  keys[e.key.toLowerCase()]=false;
- if(e.code==="Space")keys.w=false;
+ if(e.code==="Space")keys.s=false;
 });
 
-// УДЕРЖАНИЕ КНОПОК БЕЗ ВЫЗОВА МЕНЮ КОПИРОВАНИЯ
+// КНОПКИ С УДЕРЖАНИЕМ
 function bind(id,key){
  const el=$(id);
 
@@ -580,10 +593,11 @@ function bind(id,key){
   e.preventDefault();
   keys[key]=true;
   el.classList.add("active");
-  el.setPointerCapture(e.pointerId);
+
+  try{el.setPointerCapture(e.pointerId)}catch(err){}
  });
 
- function release(e){
+ function release(){
   keys[key]=false;
   el.classList.remove("active");
  }
@@ -598,9 +612,11 @@ bind("right","d");
 bind("gas","w");
 bind("brake","s");
 
+// СТАРТ
 $("start").addEventListener("click",()=>{
  if(!carReady){
-  status.textContent="Дождись загрузки автомобиля";
+  status.style.display="block";
+  status.textContent="Подожди загрузки Гелика";
   return;
  }
 
@@ -618,25 +634,34 @@ function animate(){
 
  if(playing){
 
-  if(keys.w)speed+=45*dt;
-  else speed-=10*dt;
+  // ГАЗ И ТОРМОЗ
+  if(keys.w)speed+=35*dt;
+  else speed-=7*dt;
 
-  if(keys.s)speed-=80*dt;
+  if(keys.s)speed-=65*dt;
 
-  speed=THREE.MathUtils.clamp(speed,0,240);
+  speed=THREE.MathUtils.clamp(speed,0,200);
 
-  if(keys.a)steering+=2*dt;
-  if(keys.d)steering-=2*dt;
+  // РУЛЬ — ИСПРАВЛЕНО
+  if(keys.a)steering-=2.2*dt;
+  if(keys.d)steering+=2.2*dt;
 
-  if(!keys.a&&!keys.d)steering*=.9;
+  if(!keys.a&&!keys.d){
+   steering*=Math.pow(.08,dt);
+  }
 
-  car.position.x+=steering*speed*.009*dt;
+  steering=THREE.MathUtils.clamp(steering,-1,1);
+
+  // ЛЕВО — ВЛЕВО, ПРАВО — ВПРАВО
+  const turnPower=speed/200;
+
+  car.position.x+=steering*turnPower*8*dt;
   car.position.x=THREE.MathUtils.clamp(
    car.position.x,-5.5,5.5
   );
 
   car.rotation.y=THREE.MathUtils.lerp(
-   car.rotation.y,-steering*.12,.1
+   car.rotation.y,-steering*.18,.12
   );
 
   distance+=speed*dt/3.6;
@@ -657,9 +682,10 @@ function animate(){
   });
  }
 
+ // КАМЕРА
  camera.position.lerp(
-  new THREE.Vector3(car.position.x*.4,4.3,10),
-  .055
+  new THREE.Vector3(car.position.x*.4,4.2,10),
+  .07
  );
 
  camera.lookAt(car.position.x*.35,1.3,-10);
